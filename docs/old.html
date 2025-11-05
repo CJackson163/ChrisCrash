@@ -20,14 +20,6 @@
             margin: 0 auto;
         }
 
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -40,50 +32,6 @@
             font-size: 24px;
             margin-bottom: 10px;
             color: #00d4ff;
-        }
-
-        .warning-box {
-            background: #c70039;
-            border: 3px solid #ff6b9d;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 40px 0;
-            text-align: center;
-        }
-
-        .warning-box h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        .warning-box p {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .large-btn {
-            background: #0f4c75;
-            color: white;
-            border: 3px solid #00d4ff;
-            padding: 25px;
-            font-size: 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-
-        .large-btn:hover {
-            background: #1a5c8a;
-            transform: scale(1.02);
-        }
-
-        .large-btn:active {
-            background: #00d4ff;
-            color: #1a1a2e;
         }
 
         .controls {
@@ -219,137 +167,73 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
-
-        .initial-message {
-            background: #dd7907;
-            border: 3px solid #ff6b9d;
-            border-radius: 15px;
-            padding: 40px;
-            margin: 40px 0;
-            text-align: center;
-        }
-
-        .initial-message p {
-            font-size: 20px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
-    <!-- Screen 1: Safety Warning -->
-    <div id="screen1" class="screen active">
-        <div class="header">
-            <h1>⚠️ Safety Check</h1>
-        </div>
-        
-        <div class="warning-box">
-            <h2>⚠️ IMPORTANT ⚠️</h2>
-            <p>Are you certain that this is CFS and not any other medical emergency?</p>
-            <p style="font-size: 16px; margin-bottom: 20px;">If you are experiencing chest pain, difficulty breathing, severe bleeding, loss of consciousness, or any other life-threatening symptoms, call emergency services immediately.</p>
-            <button class="large-btn" onclick="goToScreen2()">Yes, I confirm this is a CFS crash</button>
-        </div>
+    <div class="header">
+        <h1>💬 Chris Crash</h1>
+        <p>Tap buttons to speak</p>
     </div>
 
-    <!-- Screen 2: Initial CFS Message -->
-    <div id="screen2" class="screen">
-        <div class="header">
-            <h1>💬 Chris Crash</h1>
-        </div>
-
-        <div class="initial-message">
-            <p>Tap the button below to explain your situation and continue to the full app</p>
-            <button class="large-btn" id="initialCfsBtn">
-                I have CFS/ME and I'm experiencing a severe crash. I cannot speak but I can hear you.
-            </button>
-        </div>
-    </div>
-
-    <!-- Screen 3: Main App -->
-    <div id="screen3" class="screen">
-        <div class="header">
-            <h1>💬 Chris Crash</h1>
-            <p>Tap buttons to speak</p>
-        </div>
-
-        <div class="speaking-indicator" id="indicator">🔊 Speaking...</div>
+    <div class="speaking-indicator" id="indicator">🔊 Speaking...</div>
 
         <div class="controls">
-            <div class="control-group">
-                <label for="rate">Speed:</label>
-                <input type="range" id="rate" min="0.5" max="1.5" step="0.1" value="0.9">
-                <span class="value-display" id="rateValue">0.9x</span>
-            </div>
-            <div class="control-group">
-                <label for="volume">Volume:</label>
-                <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
-                <span class="value-display" id="volumeValue">100%</span>
-            </div>
+        <div class="control-group">
+            <label for="rate">Speed:</label>
+            <input type="range" id="rate" min="0.5" max="1.5" step="0.1" value="0.9">
+            <span class="value-display" id="rateValue">0.9x</span>
         </div>
-
-        <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
-
-        <div class="section">
-            <div class="section-title">⚠️ Important Messages</div>
-            <div class="button-grid">
-                <button class="speak-btn emergency" data-text="Please speak slowly and wait for my responses. I need time to process.">
-                    Please speak slowly and wait for my responses
-                </button>
-                <button class="speak-btn emergency" data-text="I need quiet and rest.">
-                    I need quiet and rest
-                </button>
-            </div>
+        <div class="control-group">
+            <label for="volume">Volume:</label>
+            <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+            <span class="value-display" id="volumeValue">100%</span>
         </div>
+    </div>
 
-        <div class="section">
-            <div class="section-title">Responses</div>
-            <div class="button-grid">
-                <button class="speak-btn" data-text="Yes">
-                    Yes
-                </button>
-                <button class="speak-btn" data-text="No">
-                    No
-                </button>
-                <button class="speak-btn" data-text="I don't know">
-                    I don't know
-                </button>
-            </div>
-        </div>
+    <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
 
-        <div class="section">
-            <div class="section-title">✏️ Custom Message</div>
-            <input type="text" class="custom-input" id="customText" placeholder="Type your own message here...">
-            <button class="speak-btn" id="customBtn">
-                🗣️ Speak Custom Message
+    <div class="section">
+        <div class="section-title">⚠️ Important Messages</div>
+        <div class="button-grid">
+            <button class="speak-btn emergency" data-text="I have C F S, and I'm experiencing a severe crash. I cannot speak right now but I can hear you.">
+                I have CFS/ME and I'm experiencing a severe crash. I cannot speak but I can hear you.
+            </button>
+            <button class="speak-btn emergency" data-text="Please speak slowly and wait for my responses. I need time to process.">
+                Please speak slowly and wait for my responses
+            </button>
+            <button class="speak-btn emergency" data-text="I need quiet and rest.">
+                I need quiet and rest
             </button>
         </div>
+    </div>
+
+
+    <div class="section">
+        <div class="section-title"> Responses</div>
+        <div class="button-grid">
+            <button class="speak-btn" data-text="Yes">
+                Yes
+            </button>
+            <button class="speak-btn" data-text="No">
+                No
+            </button>
+            <button class="speak-btn" data-text="I don't know">
+                I don't know
+            </button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">✏️ Custom Message</div>
+        <input type="text" class="custom-input" id="customText" placeholder="Type your own message here...">
+        <button class="speak-btn" id="customBtn">
+            🗣️ Speak Custom Message
+        </button>
     </div>
 
     <script>
         let currentUtterance = null;
 
-        // Navigation functions
-        function goToScreen2() {
-            document.getElementById('screen1').classList.remove('active');
-            document.getElementById('screen2').classList.add('active');
-        }
-
-        function goToScreen3() {
-            document.getElementById('screen2').classList.remove('active');
-            document.getElementById('screen3').classList.add('active');
-        }
-
-        // Initial CFS message button
-        document.getElementById('initialCfsBtn').addEventListener('click', () => {
-            speak("I have C F S M E, and I'm experiencing a severe crash. I cannot speak right now but I can hear you.");
-            // Wait a moment for speech to start, then transition
-            setTimeout(() => {
-                goToScreen3();
-            }, 500);
-        });
-
-        // Get elements for main app
         const rateSlider = document.getElementById('rate');
         const volumeSlider = document.getElementById('volume');
         const rateValue = document.getElementById('rateValue');
