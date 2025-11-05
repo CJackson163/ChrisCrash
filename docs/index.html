@@ -34,6 +34,204 @@
             color: #00d4ff;
         }
 
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .setup-section {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .setup-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .setup-btn {
+            background: #00d4ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .setup-btn:hover {
+            background: #00b8d4;
+        }
+
+        .setup-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-indicator {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .status-indicator.active {
+            display: block;
+        }
+
+        .status-indicator.success {
+            background: #27ae60;
+        }
+
+        .status-indicator.warning {
+            background: #f39c12;
+        }
+
+        .status-indicator.error {
+            background: #c70039;
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .listen-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .listen-section.active {
+            display: block;
+        }
+
+        .listen-btn {
+            width: 100%;
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .listen-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+        }
+
+        .listen-btn.listening {
+            background: #ff6b6b;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        .heard-text {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            min-height: 50px;
+            display: none;
+        }
+
+        .heard-text.active {
+            display: block;
+        }
+
+        .heard-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .heard-content {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .suggestions-section {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .suggestions-section.active {
+            display: block;
+        }
+
+        .suggestions-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+            color: #00d4ff;
+        }
+
+        .suggestion-btn {
+            width: 100%;
+            background: #0f4c75;
+            color: white;
+            border: 2px solid #00d4ff;
+            padding: 18px;
+            font-size: 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .suggestion-btn:hover {
+            background: #1a5c8a;
+            transform: translateX(5px);
+        }
+
+        .suggestion-btn:active {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+
         .controls {
             display: grid;
             gap: 10px;
@@ -141,6 +339,7 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
+            margin-bottom: 20px;
         }
 
         .stop-btn:hover {
@@ -163,6 +362,19 @@
             animation: pulse 1.5s infinite;
         }
 
+        .error-message {
+            background: #c70039;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
@@ -172,12 +384,43 @@
 <body>
     <div class="header">
         <h1>💬 Chris Crash</h1>
-        <p>Tap buttons to speak</p>
+        <p>AI-Powered Communication Assistant</p>
+        <span class="ai-badge" id="aiBadge">🤖 AI: Not Connected</span>
+    </div>
+
+    <div class="setup-section" id="setupSection">
+        <div class="setup-title">⚙️ Setup Chrome AI</div>
+        <button class="setup-btn" id="setupBtn">Initialize AI</button>
+        <div class="status-indicator" id="statusIndicator"></div>
+        <div class="info-box">
+            <strong>Chrome Built-in AI:</strong> Free, runs on your device, completely private. No API key needed. Requires Chrome 127+ with AI features enabled.
+            <br><br>
+            <strong>To enable:</strong> Go to chrome://flags, enable "Prompt API for Gemini Nano" and "Optimization Guide On Device Model", then restart Chrome.
+        </div>
     </div>
 
     <div class="speaking-indicator" id="indicator">🔊 Speaking...</div>
 
-        <div class="controls">
+    <div class="listen-section" id="listenSection">
+        <button class="listen-btn" id="listenBtn">
+            <span id="listenIcon">👂</span>
+            <span id="listenText">TAP TO LISTEN</span>
+        </button>
+        <div class="heard-text" id="heardText">
+            <div class="heard-label">They said:</div>
+            <div class="heard-content" id="heardContent"></div>
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <div class="suggestions-section" id="suggestionsSection">
+        <div class="suggestions-title">💡 AI-Generated Responses (Tap to Speak)</div>
+        <div id="suggestionsContainer"></div>
+    </div>
+
+    <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
+
+    <div class="controls">
         <div class="control-group">
             <label for="rate">Speed:</label>
             <input type="range" id="rate" min="0.5" max="1.5" step="0.1" value="0.9">
@@ -189,8 +432,6 @@
             <span class="value-display" id="volumeValue">100%</span>
         </div>
     </div>
-
-    <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
 
     <div class="section">
         <div class="section-title">⚠️ Important Messages</div>
@@ -244,6 +485,9 @@
 
     <script>
         let currentUtterance = null;
+        let recognition = null;
+        let isListening = false;
+        let aiSession = null;
 
         const rateSlider = document.getElementById('rate');
         const volumeSlider = document.getElementById('volume');
@@ -253,6 +497,197 @@
         const stopBtn = document.getElementById('stopBtn');
         const customText = document.getElementById('customText');
         const customBtn = document.getElementById('customBtn');
+        const setupBtn = document.getElementById('setupBtn');
+        const setupSection = document.getElementById('setupSection');
+        const listenSection = document.getElementById('listenSection');
+        const listenBtn = document.getElementById('listenBtn');
+        const listenIcon = document.getElementById('listenIcon');
+        const listenText = document.getElementById('listenText');
+        const heardText = document.getElementById('heardText');
+        const heardContent = document.getElementById('heardContent');
+        const suggestionsSection = document.getElementById('suggestionsSection');
+        const suggestionsContainer = document.getElementById('suggestionsContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const aiBadge = document.getElementById('aiBadge');
+
+        // Setup AI button
+        setupBtn.addEventListener('click', async () => {
+            setupBtn.disabled = true;
+            setupBtn.textContent = 'Initializing AI...';
+            await initializeChromeAI();
+            setupBtn.disabled = false;
+            setupBtn.textContent = 'Initialize AI';
+        });
+
+        // Initialize Chrome's built-in AI
+        async function initializeChromeAI() {
+            if (!window.ai || !window.ai.languageModel) {
+                showStatus('Chrome AI not available. Please enable AI features in Chrome flags.', 'error');
+                return;
+            }
+
+            try {
+                const capabilities = await window.ai.languageModel.capabilities();
+                
+                if (capabilities.available === 'no') {
+                    showStatus('Chrome AI not available on this device', 'error');
+                    return;
+                }
+
+                if (capabilities.available === 'after-download') {
+                    showStatus('Downloading AI model... This may take a few minutes. Please wait.', 'warning');
+                }
+
+                aiSession = await window.ai.languageModel.create({
+                    systemPrompt: `You are a compassionate communication assistant for someone with CFS/ME who is experiencing a severe crash and cannot speak. Your job is to suggest 4-5 SHORT, appropriate verbal responses (each 5-15 words) to what others say to them. 
+
+Consider:
+- The person has very limited energy
+- They need clear, simple communication
+- Responses should be polite but brief
+- Include practical responses about their needs
+- Be empathetic but direct
+
+Format: Return ONLY a numbered list of responses, nothing else. Example:
+1. Response here
+2. Another response
+3. Third response
+4. Fourth response`
+                });
+
+                showStatus('Chrome AI ready! You can now use voice listening.', 'success');
+                aiBadge.textContent = '🤖 AI: Connected';
+                setupSection.style.display = 'none';
+                listenSection.classList.add('active');
+                initRecognition();
+
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            statusIndicator.textContent = message;
+            statusIndicator.className = `status-indicator active ${type}`;
+            setTimeout(() => {
+                if (type !== 'success') {
+                    statusIndicator.classList.remove('active');
+                }
+            }, 5000);
+        }
+
+        // Initialize speech recognition
+        function initRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                errorMessage.textContent = 'Voice recognition not supported in this browser. Try Chrome or Safari.';
+                errorMessage.classList.add('active');
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isListening = true;
+                listenBtn.classList.add('listening');
+                listenIcon.textContent = '🎤';
+                listenText.textContent = 'LISTENING...';
+                errorMessage.classList.remove('active');
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                heardContent.textContent = transcript;
+                heardText.classList.add('active');
+                generateAISuggestions(transcript);
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Recognition error:', event.error);
+                if (event.error === 'not-allowed') {
+                    errorMessage.textContent = 'Microphone access denied. Please allow microphone access in browser settings.';
+                    errorMessage.classList.add('active');
+                } else if (event.error === 'no-speech') {
+                    errorMessage.textContent = 'No speech detected. Try again.';
+                    errorMessage.classList.add('active');
+                }
+                resetListenButton();
+            };
+
+            recognition.onend = () => {
+                resetListenButton();
+            };
+        }
+
+        function resetListenButton() {
+            isListening = false;
+            listenBtn.classList.remove('listening');
+            listenIcon.textContent = '👂';
+            listenText.textContent = 'TAP TO LISTEN';
+        }
+
+        // Generate AI suggestions
+        async function generateAISuggestions(heard) {
+            suggestionsSection.classList.add('active');
+            suggestionsContainer.innerHTML = '<div class="loading-spinner">🤖 AI is thinking...</div>';
+
+            try {
+                const prompt = `Someone just said to me: "${heard}"\n\nSuggest 4-5 brief responses (5-15 words each):`;
+                const response = await aiSession.prompt(prompt);
+                const suggestions = parseAIResponse(response);
+                displaySuggestions(suggestions);
+            } catch (error) {
+                console.error('AI Error:', error);
+                suggestionsContainer.innerHTML = '<div class="error-message active">Error generating responses. Try again.</div>';
+            }
+        }
+
+        // Parse AI response into array
+        function parseAIResponse(response) {
+            const lines = response.split('\n').filter(line => line.trim());
+            const suggestions = [];
+            
+            for (const line of lines) {
+                // Remove numbering, bullets, etc.
+                const cleaned = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[-*]\s*/, '').trim();
+                if (cleaned && cleaned.length > 3) {
+                    suggestions.push(cleaned);
+                }
+            }
+            
+            return suggestions.slice(0, 5);
+        }
+
+        function displaySuggestions(suggestions) {
+            suggestionsContainer.innerHTML = '';
+            
+            if (suggestions.length === 0) {
+                suggestions = ['Thank you', 'Yes', 'No', 'Please wait'];
+            }
+
+            suggestions.forEach(suggestion => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion-btn';
+                btn.textContent = suggestion;
+                btn.onclick = () => speak(suggestion);
+                suggestionsContainer.appendChild(btn);
+            });
+        }
+
+        // Listen button
+        listenBtn.addEventListener('click', () => {
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
 
         // Update slider displays
         rateSlider.addEventListener('input', (e) => {
@@ -318,6 +753,9 @@
         stopBtn.addEventListener('click', () => {
             window.speechSynthesis.cancel();
             indicator.classList.remove('active');
+            if (recognition && isListening) {
+                recognition.stop();
+            }
         });
     </script>
 </body>
