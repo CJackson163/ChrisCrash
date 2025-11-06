@@ -86,6 +86,38 @@
             color: #1a1a2e;
         }
 
+        .controls {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #16213e;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            min-width: 60px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 30px;
+        }
+
+        .value-display {
+            min-width: 40px;
+            text-align: right;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
         .section {
             margin-bottom: 20px;
         }
@@ -140,24 +172,6 @@
             background: #d97410;
         }
 
-        .speak-btn.yes {
-            background: #28a745;
-            border-color: #4caf50;
-        }
-
-        .speak-btn.yes:hover {
-            background: #34c759;
-        }
-
-        .speak-btn.no {
-            background: #dc3545;
-            border-color: #ff4444;
-        }
-
-        .speak-btn.no:hover {
-            background: #e74c3c;
-        }
-
         .custom-input {
             width: 100%;
             padding: 15px;
@@ -179,7 +193,6 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
-            margin-bottom: 20px;
         }
 
         .stop-btn:hover {
@@ -262,6 +275,19 @@
 
         <div class="speaking-indicator" id="indicator">🔊 Speaking...</div>
 
+        <div class="controls">
+            <div class="control-group">
+                <label for="rate">Speed:</label>
+                <input type="range" id="rate" min="0.5" max="1.5" step="0.1" value="0.9">
+                <span class="value-display" id="rateValue">0.9x</span>
+            </div>
+            <div class="control-group">
+                <label for="volume">Volume:</label>
+                <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+                <span class="value-display" id="volumeValue">100%</span>
+            </div>
+        </div>
+
         <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
 
         <div class="section">
@@ -279,10 +305,10 @@
         <div class="section">
             <div class="section-title">Responses</div>
             <div class="button-grid">
-                <button class="speak-btn yes" data-text="Yes">
+                <button class="speak-btn" data-text="Yes">
                     Yes
                 </button>
-                <button class="speak-btn no" data-text="No">
+                <button class="speak-btn" data-text="No">
                     No
                 </button>
                 <button class="speak-btn" data-text="I don't know">
@@ -324,19 +350,32 @@
         });
 
         // Get elements for main app
+        const rateSlider = document.getElementById('rate');
+        const volumeSlider = document.getElementById('volume');
+        const rateValue = document.getElementById('rateValue');
+        const volumeValue = document.getElementById('volumeValue');
         const indicator = document.getElementById('indicator');
         const stopBtn = document.getElementById('stopBtn');
         const customText = document.getElementById('customText');
         const customBtn = document.getElementById('customBtn');
 
-        // Speech function with fixed rate and volume
+        // Update slider displays
+        rateSlider.addEventListener('input', (e) => {
+            rateValue.textContent = e.target.value + 'x';
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            volumeValue.textContent = Math.round(e.target.value * 100) + '%';
+        });
+
+        // Speech function
         function speak(text) {
             // Cancel any ongoing speech
             window.speechSynthesis.cancel();
 
             currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.rate = 1.0;
-            currentUtterance.volume = 1.0;
+            currentUtterance.rate = parseFloat(rateSlider.value);
+            currentUtterance.volume = parseFloat(volumeSlider.value);
             currentUtterance.pitch = 1;
 
             currentUtterance.onstart = () => {
