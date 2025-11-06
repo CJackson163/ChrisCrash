@@ -360,12 +360,12 @@
         });
 
         // Custom message button
-        customBtn.addEventListener('click', () => {
-            const text = customText.value.trim();
-            if (text) {
-                speak(text);
-            }
-        });
+        // customBtn.addEventListener('click', () => {
+        //     const text = customText.value.trim();
+        //     if (text) {
+        //         speak(text);
+        //     }
+        // });
 
         // Allow Enter key to speak custom message
         customText.addEventListener('keypress', (e) => {
@@ -381,6 +381,7 @@
         stopBtn.addEventListener('click', () => {
             window.speechSynthesis.cancel();
             indicator.classList.remove('active');
+            console.log("test")
         });
     </script>
 </body>
