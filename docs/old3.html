@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris Crash</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+
+        .warning-box {
+            background: #c70039;
+            border: 3px solid #ff6b9d;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .warning-box h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .warning-box p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .large-btn {
+            background: #0f4c75;
+            color: white;
+            border: 3px solid #00d4ff;
+            padding: 25px;
+            font-size: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .large-btn:hover {
+            background: #1a5c8a;
+            transform: scale(1.02);
+        }
+
+        .large-btn:active {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .button-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .speak-btn {
+            background: #0f4c75;
+            color: white;
+            border: 2px solid #00d4ff;
+            padding: 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            line-height: 1.4;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+        }
+
+        .speak-btn:hover {
+            background: #1a5c8a;
+            transform: scale(1.02);
+        }
+
+        .speak-btn:active {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+
+        .speak-btn.emergency {
+            background: #dd7907;
+            border-color: #ff6b9d;
+            font-weight: bold;
+        }
+
+        .speak-btn.emergency:hover {
+            background: #d97410;
+        }
+
+        .speak-btn.yes {
+            background: #28a745;
+            border-color: #4caf50;
+        }
+
+        .speak-btn.yes:hover {
+            background: #34c759;
+        }
+
+        .speak-btn.no {
+            background: #dc3545;
+            border-color: #ff4444;
+        }
+
+        .speak-btn.no:hover {
+            background: #e74c3c;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            background: #0f4c75;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .stop-btn {
+            background: #c70039;
+            color: white;
+            border: 2px solid #ff6b9d;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .stop-btn:hover {
+            background: #e01e5a;
+        }
+
+        .speaking-indicator {
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .speaking-indicator.active {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .initial-message {
+            background: #dd7907;
+            border: 3px solid #ff6b9d;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .initial-message p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Screen 1: Safety Warning -->
+    <div id="screen1" class="screen active">
+        <div class="header">
+            <h1>⚠️ Safety Check</h1>
+        </div>
+        
+        <div class="warning-box">
+            <h2>⚠️ IMPORTANT ⚠️</h2>
+            <p>Are you certain that this is CFS and not any other medical emergency?</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">If you are experiencing chest pain, difficulty breathing, severe bleeding, loss of consciousness, or any other life-threatening symptoms, call emergency services immediately.</p>
+            <button class="large-btn" onclick="goToScreen2()">Yes, I confirm this is a CFS crash</button>
+        </div>
+    </div>
+
+    <!-- Screen 2: Initial CFS Message -->
+    <div id="screen2" class="screen">
+        <div class="header">
+            <h1>💬 Chris Crash</h1>
+        </div>
+
+        <div class="initial-message">
+            <p>Tap the button below to explain your situation and continue to the full app</p>
+            <button class="large-btn" id="initialCfsBtn" data-text= "I have CFS and Im experiencing a severe crash. This is normal for my condition and nothing to be too concerned about. This app will help me communicate with you as I may not be able to speak now.">
+                I have CFS and I'm experiencing a severe crash. This is normal for my condition and nothing to be too concerned about. This app will help me communicate with you as I may not be able to speak now. 
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Main App -->
+    <div id="screen3" class="screen">
+        <div class="header">
+            <h1>💬 Chris Crash</h1>
+            <p>Tap buttons to speak</p>
+        </div>
+
+        <div class="speaking-indicator" id="indicator">🔊 Speaking...</div>
+
+        <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
+
+        <div class="section">
+            <div class="section-title">⚠️ Important Messages</div>
+            <div class="button-grid">
+                <button class="speak-btn emergency" data-text="Please speak slowly and wait for my responses.">
+                    Please speak slowly and wait for my responses
+                </button>
+                <button class="speak-btn emergency" data-text="I need quiet and rest.">
+                    I need quiet and rest
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Responses</div>
+            <div class="button-grid">
+                <button class="speak-btn yes" data-text="Yes">
+                    Yes
+                </button>
+                <button class="speak-btn no" data-text="No">
+                    No
+                </button>
+                <button class="speak-btn" data-text="I don't know">
+                    I don't know
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">✏️ Custom Message</div>
+            <input type="text" class="custom-input" id="customText" placeholder="Type your own message here...">
+        </div>
+    </div>
+
+    <script>
+        let currentUtterance = null;
+
+        // Navigation functions
+        function goToScreen2() {
+            document.getElementById('screen1').classList.remove('active');
+            document.getElementById('screen2').classList.add('active');
+        }
+
+        function goToScreen3() {
+            document.getElementById('screen2').classList.remove('active');
+            document.getElementById('screen3').classList.add('active');
+        }
+
+        // Initial CFS message button
+        document.getElementById('initialCfsBtn').addEventListener('click', () => {
+            speak("I have CFS and Im experiencing a severe crash. This is normal for my condition and nothing to be too concerned about. This app will help me communicate with you as I may not be able to speak now.");
+            // Wait a moment for speech to start, then transition
+            setTimeout(() => {
+                goToScreen3();
+            }, 500);
+        });
+
+        // Get elements for main app
+        const indicator = document.getElementById('indicator');
+        const stopBtn = document.getElementById('stopBtn');
+        const customText = document.getElementById('customText');
+        const customBtn = document.getElementById('customBtn');
+
+        // Speech function with fixed rate and volume
+        function speak(text) {
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.rate = 1.0;
+            currentUtterance.volume = 1.0;
+            currentUtterance.pitch = 1;
+
+            currentUtterance.onstart = () => {
+                indicator.classList.add('active');
+            };
+
+            currentUtterance.onend = () => {
+                indicator.classList.remove('active');
+            };
+
+            currentUtterance.onerror = () => {
+                indicator.classList.remove('active');
+            };
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        // Add click handlers to all speak buttons
+        document.querySelectorAll('.speak-btn[data-text]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.getAttribute('data-text');
+                speak(text);
+            });
+        });
+
+        // Custom message button
+        // customBtn.addEventListener('click', () => {
+        //     const text = customText.value.trim();
+        //     if (text) {
+        //         speak(text);
+        //     }
+        // });
+
+        // Allow Enter key to speak custom message
+        customText.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const text = customText.value.trim();
+                if (text) {
+                    speak(text);
+                }
+            }
+        });
+
+        // Stop button
+        stopBtn.addEventListener('click', () => {
+            window.speechSynthesis.cancel();
+            indicator.classList.remove('active');
+            console.log("test")
+        });
+    </script>
+</body>
+</html>

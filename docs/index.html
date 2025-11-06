@@ -169,6 +169,44 @@
             margin-bottom: 10px;
         }
 
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .input-group .custom-input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .input-group .ai-input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .mic-btn {
+            background: #28a745;
+            color: white;
+            border: 2px solid #4caf50;
+            padding: 15px 20px;
+            font-size: 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 60px;
+        }
+
+        .mic-btn:hover {
+            background: #34c759;
+        }
+
+        .mic-btn.recording {
+            background: #dc3545;
+            border-color: #ff4444;
+            animation: pulse 1s infinite;
+        }
+
         .stop-btn {
             background: #c70039;
             color: white;
@@ -222,6 +260,106 @@
             margin-bottom: 30px;
             font-weight: bold;
         }
+
+        .ai-section {
+            background: #16213e;
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ai-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            background: #0f4c75;
+            color: white;
+            margin-bottom: 10px;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .ai-btn {
+            background: #7b2cbf;
+            color: white;
+            border: 2px solid #9d4edd;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .ai-btn:hover {
+            background: #9d4edd;
+        }
+
+        .ai-btn:disabled {
+            background: #555;
+            border-color: #777;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .ai-response {
+            background: #0f4c75;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .ai-response.active {
+            display: block;
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: #00d4ff;
+            margin-top: 5px;
+        }
+
+        .settings-btn {
+            background: #0f4c75;
+            color: white;
+            border: 2px solid #00d4ff;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .settings-panel {
+            background: #16213e;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .settings-panel input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 2px solid #00d4ff;
+            border-radius: 6px;
+            background: #0f4c75;
+            color: white;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -264,14 +402,32 @@
 
         <button class="stop-btn" id="stopBtn">⏹️ STOP SPEAKING</button>
 
+        <!-- AI Assistant Section -->
+        <div class="section">
+            <div class="section-title">🤖 AI Assistant</div>
+            <div class="ai-section">
+                <div class="input-group">
+                    <textarea class="ai-input" id="aiPrompt" placeholder="Type or speak your question to AI..."></textarea>
+                    <button class="mic-btn" id="aiMicBtn">🎤</button>
+                </div>
+                <button class="ai-btn" id="aiSendBtn">Send to AI</button>
+                <button class="settings-btn" id="settingsBtn">⚙️ LM Studio Settings</button>
+                <div class="settings-panel" id="settingsPanel">
+                    <label style="font-size: 14px; display: block; margin-bottom: 5px;">LM Studio URL:</label>
+                    <input type="text" id="lmStudioUrl" value="http://localhost:1234/v1/chat/completions" placeholder="http://localhost:1234/v1/chat/completions">
+                    <label style="font-size: 14px; display: block; margin-bottom: 5px;">Model:</label>
+                    <input type="text" id="lmStudioModel" value="local-model" placeholder="local-model">
+                </div>
+                <div class="status-text" id="aiStatus"></div>
+                <div class="ai-response" id="aiResponse"></div>
+            </div>
+        </div>
+
         <div class="section">
             <div class="section-title">⚠️ Important Messages</div>
             <div class="button-grid">
                 <button class="speak-btn emergency" data-text="Please speak slowly and wait for my responses.">
                     Please speak slowly and wait for my responses
-                </button>
-                <button class="speak-btn emergency" data-text="I need quiet and rest.">
-                    I need quiet and rest
                 </button>
             </div>
         </div>
@@ -293,12 +449,71 @@
 
         <div class="section">
             <div class="section-title">✏️ Custom Message</div>
-            <input type="text" class="custom-input" id="customText" placeholder="Type your own message here...">
+            <div class="input-group">
+                <input type="text" class="custom-input" id="customText" placeholder="Type or speak your message...">
+                <button class="mic-btn" id="micBtn">🎤</button>
+            </div>
         </div>
     </div>
 
     <script>
         let currentUtterance = null;
+        let recognition = null;
+        let aiRecognition = null;
+        let isRecording = false;
+        let isAiRecording = false;
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('customText').value = transcript;
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                document.getElementById('micBtn').classList.remove('recording');
+                document.getElementById('micBtn').textContent = '🎤';
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isRecording = false;
+                document.getElementById('micBtn').classList.remove('recording');
+                document.getElementById('micBtn').textContent = '🎤';
+                alert('Voice recognition error: ' + event.error);
+            };
+
+            // Initialize AI Speech Recognition
+            aiRecognition = new webkitSpeechRecognition();
+            aiRecognition.continuous = false;
+            aiRecognition.interimResults = false;
+            aiRecognition.lang = 'en-US';
+
+            aiRecognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('aiPrompt').value = transcript;
+            };
+
+            aiRecognition.onend = () => {
+                isAiRecording = false;
+                document.getElementById('aiMicBtn').classList.remove('recording');
+                document.getElementById('aiMicBtn').textContent = '🎤';
+            };
+
+            aiRecognition.onerror = (event) => {
+                console.error('AI speech recognition error:', event.error);
+                isAiRecording = false;
+                document.getElementById('aiMicBtn').classList.remove('recording');
+                document.getElementById('aiMicBtn').textContent = '🎤';
+                alert('Voice recognition error: ' + event.error);
+            };
+        }
 
         // Navigation functions
         function goToScreen2() {
@@ -314,7 +529,6 @@
         // Initial CFS message button
         document.getElementById('initialCfsBtn').addEventListener('click', () => {
             speak("I have CFS and Im experiencing a severe crash. This is normal for my condition and nothing to be too concerned about. This app will help me communicate with you as I may not be able to speak now.");
-            // Wait a moment for speech to start, then transition
             setTimeout(() => {
                 goToScreen3();
             }, 500);
@@ -324,13 +538,18 @@
         const indicator = document.getElementById('indicator');
         const stopBtn = document.getElementById('stopBtn');
         const customText = document.getElementById('customText');
-        const customBtn = document.getElementById('customBtn');
+        const micBtn = document.getElementById('micBtn');
+        const aiMicBtn = document.getElementById('aiMicBtn');
+        const aiPrompt = document.getElementById('aiPrompt');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiResponse = document.getElementById('aiResponse');
+        const aiStatus = document.getElementById('aiStatus');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
 
-        // Speech function with fixed rate and volume
+        // Speech function
         function speak(text) {
-            // Cancel any ongoing speech
             window.speechSynthesis.cancel();
-
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.rate = 1.0;
             currentUtterance.volume = 1.0;
@@ -359,15 +578,55 @@
             });
         });
 
-        // Custom message button
-        // customBtn.addEventListener('click', () => {
-        //     const text = customText.value.trim();
-        //     if (text) {
-        //         speak(text);
-        //     }
-        // });
+        // Microphone button
+        micBtn.addEventListener('click', () => {
+            if (!recognition) {
+                alert('Speech recognition is not supported in your browser. Please use Chrome.');
+                return;
+            }
 
-        // Allow Enter key to speak custom message
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                micBtn.textContent = '🎤';
+            } else {
+                try {
+                    recognition.start();
+                    isRecording = true;
+                    micBtn.classList.add('recording');
+                    micBtn.textContent = '⏺️';
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                }
+            }
+        });
+
+        // AI Microphone button
+        aiMicBtn.addEventListener('click', () => {
+            if (!aiRecognition) {
+                alert('Speech recognition is not supported in your browser. Please use Chrome.');
+                return;
+            }
+
+            if (isAiRecording) {
+                aiRecognition.stop();
+                isAiRecording = false;
+                aiMicBtn.classList.remove('recording');
+                aiMicBtn.textContent = '🎤';
+            } else {
+                try {
+                    aiRecognition.start();
+                    isAiRecording = true;
+                    aiMicBtn.classList.add('recording');
+                    aiMicBtn.textContent = '⏺️';
+                } catch (error) {
+                    console.error('Error starting AI recognition:', error);
+                }
+            }
+        });
+
+        // Custom message with Enter key
         customText.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const text = customText.value.trim();
@@ -381,7 +640,87 @@
         stopBtn.addEventListener('click', () => {
             window.speechSynthesis.cancel();
             indicator.classList.remove('active');
-            console.log("test")
+        });
+
+        // Settings toggle
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.toggle('active');
+        });
+
+        // LM Studio Integration
+        async function sendToLMStudio(prompt) {
+            const url = document.getElementById('lmStudioUrl').value;
+            const model = document.getElementById('lmStudioModel').value;
+
+            aiStatus.textContent = 'Sending to AI...';
+            aiSendBtn.disabled = true;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are a helpful assistant helping someone with CFS (Chronic Fatigue Syndrome) communicate during a crash. Keep responses brief and clear."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 500
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const aiText = data.choices[0].message.content;
+
+                aiResponse.textContent = aiText;
+                aiResponse.classList.add('active');
+                aiStatus.textContent = 'Response received! Click response to speak it.';
+
+                // Make response clickable to speak it
+                aiResponse.style.cursor = 'pointer';
+                aiResponse.onclick = () => {
+                    speak(aiText);
+                };
+
+            } catch (error) {
+                console.error('LM Studio error:', error);
+                aiStatus.textContent = 'Error: ' + error.message + '. Make sure LM Studio is running.';
+                aiResponse.classList.remove('active');
+            } finally {
+                aiSendBtn.disabled = false;
+            }
+        }
+
+        // AI Send button
+        aiSendBtn.addEventListener('click', () => {
+            const prompt = aiPrompt.value.trim();
+            if (prompt) {
+                sendToLMStudio(prompt);
+            }
+        });
+
+        // AI prompt with Enter key (Shift+Enter for new line)
+        aiPrompt.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const prompt = aiPrompt.value.trim();
+                if (prompt) {
+                    sendToLMStudio(prompt);
+                }
+            }
         });
     </script>
 </body>
